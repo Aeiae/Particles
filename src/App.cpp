@@ -4,8 +4,8 @@
 
 #include "App.hpp"
 
-App::App() : m_dt{0.0f}, m_window{SCREEN, "Particle", sf::Style::Fullscreen}, m_particleCount(500000),
-m_fullSpeed(10000), m_slowSpeed(1000), m_threadCount(4)
+App::App() : m_dt{0.0f}, m_window{SCREEN, "Particle", sf::Style::Fullscreen}, m_particleCount(200000),
+m_fullSpeed(2000), m_slowSpeed(1000), m_threadCount(1)
 {
     m_window.setVerticalSyncEnabled(true);
     UpdateMousePosition();
