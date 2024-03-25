@@ -4,19 +4,37 @@
 
 #include "App.hpp"
 
-App::App() : m_dt{0.0f}, m_window{SCREEN, "Particle", sf::Style::Fullscreen}, m_particleCount(50000),
-m_fullSpeed(10000), m_slowSpeed(1000)
+App::App() : m_dt{0.0f}, m_window{SCREEN, "Particle", sf::Style::Fullscreen}, m_particleCount(500000),
+m_fullSpeed(10000), m_slowSpeed(1000), m_threadCount(4)
 {
     m_window.setVerticalSyncEnabled(true);
     UpdateMousePosition();
     srand(time(nullptr));
 
-    for(int i = 0; i < m_particleCount; i++)
+    //std::thread thread(MultithreadUpdate, this, 0);
+
+
+
+
+    Thr thr;
+    for(int i = 0; i < m_threadCount; i++)
     {
-        m_particleArray.emplace_back(&m_mousePos, &m_dt);
+
+        thr.dt = 0;
+        for(int j = m_particleCount/m_threadCount * i; j < m_particleCount/m_threadCount * (i+1); j++)
+        {
+            m_particleArray.emplace_back();
+        }
+
+
+
+    }
+    for(int i = 0; i < m_threadCount; i++)
+    {
+        thr.thread = new std::thread{MultithreadUpdate, this, i};
+        m_threads.emplace_back(thr);
     }
 }
-
 App::~App() {
 
 }
@@ -24,9 +42,12 @@ App::~App() {
 void App::Update() {
     while(m_window.isOpen()){
         UpdateDT();
-        UpdateMousePosition();
+
+
+        /*
         for(auto & i : m_particleArray)
             i.updateVertex();
+        */
 
         HandleEvents();
 
@@ -46,7 +67,12 @@ void App::HandleEvents() {
     for(sf::Event event; m_window.pollEvent(event);){
         if(event.type == sf::Event::Closed || event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
         {
+
             m_window.close();
+            for(auto& thr : m_threads)
+            {
+                thr.thread->join();
+            }
         }
         else if(event.type == sf::Event::MouseButtonPressed)
         {
@@ -77,4 +103,18 @@ void App::Run() {
 
 void App::UpdateMousePosition() {
     m_mousePos = sf::Mouse::getPosition(m_window);
+}
+
+void App::MultithreadUpdate(int threadNum)
+{
+
+    while(m_window.isOpen())
+    {
+        UpdateMousePosition();
+        for(int i = m_particleCount/m_threadCount * threadNum; i < m_particleCount/m_threadCount * (threadNum + 1); i++)
+        {
+            m_particleArray[i].updateVertex(m_threads[threadNum].dt, m_mousePos);
+        }
+        m_threads[threadNum].dt = m_threads[threadNum].clock.restart().asSeconds();
+    }
 }

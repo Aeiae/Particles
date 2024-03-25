@@ -13,7 +13,6 @@ class Particle {
 private:
     const float PI;
     sf::Vertex vertex;
-    sf::Vector2i* MPos;
     sf::Vector2f velocity;
     float speed;
     float angle;
@@ -21,18 +20,17 @@ public:
     void SetMaxSpeed(float maxSpeed);
 
 private:
-    float* Pdt;
     float maxSpeed;
 
     void Move(float XOffset, float YOffset);
-    void determineVelocity();
+    void determineVelocity(const sf::Vector2i& mousePos);
 
 public:
-    explicit Particle(sf::Vector2i* MPosition, float* dt);
+    Particle();
 
     const sf::Vertex* GetVertex() const;
 
-    void updateVertex();
+    void updateVertex(float dt, const sf::Vector2i& mousePos);
     ~Particle();
 
 

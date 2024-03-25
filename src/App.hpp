@@ -8,6 +8,15 @@
 #include "Particle.hpp"
 #include <array>
 #include <ctime>
+#include <thread>
+
+struct Thr {
+    std::thread* thread;
+    sf::Clock clock;
+    float dt;
+};
+
+
 class App {
 
 private:
@@ -17,7 +26,8 @@ private:
     sf::Clock m_clock;
     float m_dt;
 
-    int m_particleCount;
+    const int m_particleCount;
+    const int m_threadCount{};
 
     float m_fullSpeed;
     float m_slowSpeed;
@@ -26,12 +36,16 @@ private:
     sf::Vector2i m_mousePos;
 
     std::vector<Particle> m_particleArray;
+    std::vector<Thr> m_threads;
+
+    std::thread thread;
 
     void Render();
     void HandleEvents();
     void Update();
     void UpdateDT();
     void UpdateMousePosition();
+    void MultithreadUpdate(int threadNum);
 
 public:
     App();
