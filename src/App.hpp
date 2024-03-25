@@ -12,16 +12,20 @@ class App {
 
 private:
 
-    sf::RenderWindow* window;
+    sf::RenderWindow m_window;
 
-    sf::Clock clock;
-    float dt;
+    sf::Clock m_clock;
+    float m_dt;
 
-    sf::Event event{};
+    int m_particleCount;
 
-    sf::Vector2i MousePos;
+    float m_fullSpeed;
+    float m_slowSpeed;
 
-    std::array<Particle*, 200000> particleArray;
+
+    sf::Vector2i m_mousePos;
+
+    std::vector<Particle> m_particleArray;
 
     void Render();
     void HandleEvents();

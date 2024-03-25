@@ -7,9 +7,8 @@
 Particle::Particle(sf::Vector2i* MPosition, float* dt) : speed{10000}, maxSpeed{10000}, velocity(0,0), MPos{MPosition}, Pdt{dt}, PI{3.14159}{
 
     vertex.position = sf::Vector2f(rand() % SCREEN.width, rand() % SCREEN.height);
-    //vertex.position = sf::Vector2f (SCREEN.width/2, SCREEN.height/2);
-    //vertex.color = sf::Color(255, 165,0);
-    vertex.color = sf::Color(rand() % 256, rand() % 256, rand() % 256);
+    //vertex.color = sf::Color(rand() % 256, rand() % 256, rand() % 256);
+    vertex.color = sf::Color(	255, 165, 0);
 
 }
 
@@ -33,13 +32,8 @@ const sf::Vertex* Particle::GetVertex() const {
 }
 
 void Particle::updateVertex() {
-   // std::cout<<angle<<std::endl;
-   /*
-   if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) maxSpeed = 1250;
-   else maxSpeed = 100000;
-    */
     determineVelocity();
-   Move(velocity.x * *Pdt, velocity.y * *Pdt);
+    Move(velocity.x * *Pdt, velocity.y * *Pdt);
 }
 
 void Particle::SetMaxSpeed(float maxSpeed) {

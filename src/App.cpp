@@ -4,26 +4,29 @@
 
 #include "App.hpp"
 
-App::App() : dt{0.0f}{
-    window = new sf::RenderWindow(SCREEN, "Particle");
-    window->setVerticalSyncEnabled(true);
+App::App() : m_dt{0.0f}, m_window{SCREEN, "Particle", sf::Style::Fullscreen}, m_particleCount(50000),
+m_fullSpeed(10000), m_slowSpeed(1000)
+{
+    m_window.setVerticalSyncEnabled(true);
     UpdateMousePosition();
-    srand(time(NULL));
+    srand(time(nullptr));
 
-    for(auto & i : particleArray)
-         i = new Particle(&MousePos, &dt);
+    for(int i = 0; i < m_particleCount; i++)
+    {
+        m_particleArray.emplace_back(&m_mousePos, &m_dt);
+    }
 }
 
 App::~App() {
-    delete window;
+
 }
 
 void App::Update() {
-    while(window->isOpen()){
+    while(m_window.isOpen()){
         UpdateDT();
         UpdateMousePosition();
-        for(auto & i : particleArray)
-            i->updateVertex();
+        for(auto & i : m_particleArray)
+            i.updateVertex();
 
         HandleEvents();
 
@@ -33,24 +36,29 @@ void App::Update() {
 }
 
 void App::Render() {
-    window->clear();
-    for(auto & i : particleArray)
-        window->draw(i->GetVertex(), 1, sf::Points);
-    window->display();
+    m_window.clear();
+    for(auto & i : m_particleArray)
+        m_window.draw(i.GetVertex(), 1, sf::Points);
+    m_window.display();
 }
 
 void App::HandleEvents() {
-    while(window->pollEvent(event)){
+    for(sf::Event event; m_window.pollEvent(event);){
         if(event.type == sf::Event::Closed || event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-            window->close();
-        else if(event.type == sf::Event::MouseButtonPressed){
-            for(auto & i : particleArray){
-                i->SetMaxSpeed(1250);
+        {
+            m_window.close();
+        }
+        else if(event.type == sf::Event::MouseButtonPressed)
+        {
+            for(auto & i : m_particleArray)
+            {
+                i.SetMaxSpeed(m_slowSpeed);
             }
         }
         else if(event.type == sf::Event::MouseButtonReleased){
-            for(auto & i : particleArray){
-                i->SetMaxSpeed(10000);
+            for(auto & i : m_particleArray)
+            {
+                i.SetMaxSpeed(m_fullSpeed);
             }
         }
     }
@@ -60,7 +68,7 @@ void App::HandleEvents() {
 
 
 void App::UpdateDT() {
-    dt = clock.restart().asSeconds();
+    m_dt = m_clock.restart().asSeconds();
 }
 
 void App::Run() {
@@ -68,5 +76,5 @@ void App::Run() {
 }
 
 void App::UpdateMousePosition() {
-    MousePos = sf::Mouse::getPosition(*window);
+    m_mousePos = sf::Mouse::getPosition(m_window);
 }
