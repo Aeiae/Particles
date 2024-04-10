@@ -26,6 +26,7 @@ private:
     sf::Vector2i m_mousePos;
 
     std::vector<Particle> m_particleArray;
+    sf::VertexBuffer m_particleBuf;
 
     void Render();
     void HandleEvents();

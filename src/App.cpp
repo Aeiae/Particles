@@ -4,7 +4,7 @@
 
 #include "App.hpp"
 
-App::App() : m_dt{0.0f}, m_window{SCREEN, "Particle", sf::Style::Fullscreen}, m_particleCount(50000),
+App::App() : m_dt{0.0f}, m_window{SCREEN, "Particle", sf::Style::Fullscreen}, m_particleCount(5000000),
 m_fullSpeed(10000), m_slowSpeed(1000)
 {
     m_window.setVerticalSyncEnabled(true);
@@ -15,6 +15,7 @@ m_fullSpeed(10000), m_slowSpeed(1000)
     {
         m_particleArray.emplace_back(&m_mousePos, &m_dt);
     }
+    m_particleBuf.create(m_particleCount);
 }
 
 App::~App() {
@@ -36,9 +37,9 @@ void App::Update() {
 }
 
 void App::Render() {
+    m_particleBuf.update(&m_particleArray[0], m_particleArray.size(), 0);
     m_window.clear();
-    for(auto & i : m_particleArray)
-        m_window.draw(i.GetVertex(), 1, sf::Points);
+    m_window.draw(m_particleBuf);
     m_window.display();
 }
 

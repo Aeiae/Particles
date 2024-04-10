@@ -8,11 +8,11 @@
 #include <random>
 #include <ctime>
 #include <cmath>
-class Particle {
+class Particle : public sf::Vertex{
 
 private:
     const float PI;
-    sf::Vertex vertex;
+
     sf::Vector2i* MPos;
     sf::Vector2f velocity;
     float speed;
@@ -30,7 +30,6 @@ private:
 public:
     explicit Particle(sf::Vector2i* MPosition, float* dt);
 
-    const sf::Vertex* GetVertex() const;
 
     void updateVertex();
     ~Particle();
